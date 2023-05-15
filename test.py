@@ -3,13 +3,17 @@ import numpy as np
 import skimage.io as io
 import random
 import os
+
+import tkinter
+import matplotlib
+matplotlib.use('TkAgg')
 # import cv2
 # from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 ### For visualizing the outputs ###
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-%matplotlib inline
+#import matplotlib.gridspec as gridspec
+#%matplotlib inline
 
 dataDir='../imgs/test2017'
 
