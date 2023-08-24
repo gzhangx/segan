@@ -1,0 +1,28 @@
+https://github.com/gzhangx/segment-anything/blob/main/segment_anything/modeling/sam.py
+
+
+sam forward:
+  image_embeddings = ImageEncoderViT(preprocessing(image))
+  for image_record, curr_embedding in zip(batched_input, image_embeddings):  
+     PromptEncoder
+     MaskDecoder
+     postprocess_masks          
+     
+
+PromptEncoder:
+    forward:
+        self.mask_downscaling = nn.Sequential(
+            nn.Conv2d(1, mask_in_chans // 4, kernel_size=2, stride=2),
+            LayerNorm2d(mask_in_chans // 4),
+            activation(), = GELU
+            nn.Conv2d(mask_in_chans // 4, mask_in_chans, kernel_size=2, stride=2),
+            LayerNorm2d(mask_in_chans),
+            activation(),
+            nn.Conv2d(mask_in_chans, embed_dim, kernel_size=1),)
+
+
+
+https://viso.ai/deep-learning/vision-transformer-vit/
+https://arxiv.org/pdf/2010.11929.pdf
+https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853
+https://github.com/facebookresearch/detectron2/blob/main/detectron2/modeling/backbone/vit.py
