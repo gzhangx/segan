@@ -26,3 +26,48 @@ https://viso.ai/deep-learning/vision-transformer-vit/
 https://arxiv.org/pdf/2010.11929.pdf
 https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853
 https://github.com/facebookresearch/detectron2/blob/main/detectron2/modeling/backbone/vit.py
+
+
+
+amg.py=>
+    from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
+    generator = SamAutomaticMaskGenerator(sam, output_mode=output_mode, **amg_kwargs)
+    masks = generator.generate(image)
+
+
+-> _init_.py
+    from .automatic_mask_generator import SamAutomaticMaskGenerator
+-> automatic_mask_generator.py
+    SamAutomaticMaskGenerator
+        def generate(self, image: np.ndarray) -> List[Dict[str, Any]]:
+            mask_data = self._generate_masks(image)
+        _generate_masks
+            self._process_crop(image, crop_box, layer_idx, orig_size)
+            ... remove duplicates ...
+        def _process_crop(self,image: np.ndarray,crop_box: List[int],crop_layer_idx: int,orig_size: Tuple[int, ...],) -> MaskData:
+            ... a lot of stuff ...
+            _process_batch
+        _process_batch
+            self.predictor.predict_torch, predictor is SamPredictor
+            and a lot of stuff.
+
+            
+
+predictor.py
+    SamPredictor
+        model=>from segment_anything.modeling import Sam
+        def predict(
+            self,
+            point_coords: Optional[np.ndarray] = None,
+            point_labels: Optional[np.ndarray] = None,
+            box: Optional[np.ndarray] = None,
+            mask_input: Optional[np.ndarray] = None,
+            multimask_output: bool = True,
+            return_logits: bool = False,
+            ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+            predict_torch
+        def predict_torch
+            sparse_embeddings, dense_embeddings = self.model.prompt_encoder(points, boxes, masks)
+            low_res_masks, iou_predictions = self.model.mask_decoder (emddings from above)
+            mask = self.model.postprocess_masks(low_res_masks)
+            return maskes,iou_predictions, low_res_masks
