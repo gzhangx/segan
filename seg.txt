@@ -35,6 +35,29 @@ amg.py=>
     masks = generator.generate(image)
 
 
+batch_iterator(self.points_per_batch, points_for_image):
+self.points_per_batch 64 points_for_image [[ 10.         6.671875]
+ [ 30.         6.671875]
+ [ 50.         6.671875]
+ ...
+ [590.       420.328125]
+ [610.       420.328125]
+ [630.       420.328125]] points_scale [[640 427]]
+
+
+
+ points in process_batch:
+ [[ 10.       406.984375]
+ [ 30.       406.984375]
+ [ 50.       406.984375]
+ [ 70.       406.984375]
+ [ 90.       406.984375]
+ [110.       406.984375]
+ [130.       406.984375]
+ [150.       406.984375]
+ ] im_size (427, 640)
+
+
 -> _init_.py
     from .automatic_mask_generator import SamAutomaticMaskGenerator
 -> automatic_mask_generator.py
@@ -42,12 +65,17 @@ amg.py=>
         def generate(self, image: np.ndarray) -> List[Dict[str, Any]]:
             mask_data = self._generate_masks(image)
         _generate_masks
+            # orig_size (427, 640) (427, 640, 3)
+            # crop_boxes, layer_idxs [[0, 0, 640, 427]] [0]
+            # processing  [0, 0, 640, 427], 0, (427, 640)
             self._process_crop(image, crop_box, layer_idx, orig_size)
             ... remove duplicates ...
         def _process_crop(self,image: np.ndarray,crop_box: List[int],crop_layer_idx: int,orig_size: Tuple[int, ...],) -> MaskData:
             ... a lot of stuff ...
+            ... batch iterator of points
+            # self.points_per_batch, points_for_image 64 1024 64
             _process_batch
-        _process_batch
+        _process_batch (self, points -> xy size of points to be processed)
             self.predictor.predict_torch, predictor is SamPredictor
             and a lot of stuff.
 
