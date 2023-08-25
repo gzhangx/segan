@@ -96,6 +96,41 @@ predictor.py
             predict_torch
         def predict_torch
             sparse_embeddings, dense_embeddings = self.model.prompt_encoder(points, boxes, masks)
-            low_res_masks, iou_predictions = self.model.mask_decoder (emddings from above)
+            low_res_masks, iou_predictions = self.model.mask_decoder (emddings from above, input has feature which is the imae feature)
             mask = self.model.postprocess_masks(low_res_masks)
             return maskes,iou_predictions, low_res_masks
+
+
+        in predictor.pyinput_image = self.transform.apply_image(image)
+        input_image_torch = torch.as_tensor(input_image, device=self.device)
+        input_image_torch = input_image_torch.permute(2, 0, 1).contiguous()[None, :, :, :]
+
+        set_tource_image:
+            input_image = self.model.preprocess(transformed_image)
+            self.features = self.model.image_encoder(input_image) image_encoder is ImageEncoderViT
+amg.py:
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    generator = SamAutomaticMaskGenerator(sam, output_mode=output_mode, **amg_kwargs)
+    masks = generator.generate(image)
+
+
+
+sparse_embeddings tensor([[[-1.1913,  0.1880, -1.0566,  ..., -1.0741, -0.8410,  0.8908],
+         [-0.0360,  0.0032, -0.0437,  ..., -0.1503, -0.1178, -0.1336]],
+])
+
+dense_embeddings tensor([[[[-0.0215, -0.0215, -0.0215,  ..., -0.0215, -0.0215, -0.0215],
+          [-0.0215, -0.0215, -0.0215,  ..., -0.0215, -0.0215, -0.0215],
+          [-0.0215, -0.0215, -0.0215,  ..., -0.0215, -0.0215, -0.0215],
+          ]]])
+
+self.features tensor([[[[ 1.1643e-01, -2.0583e-01, -9.9784e-02,  ..., -1.9412e-01,
+            6.6644e-03, -7.2308e-02],
+          [-1.8789e-01, -2.3789e-03,  9.0807e-02,  ...,  1.9272e-01,
+           -9.7413e-04,  8.4644e-02],
+          [-6.6448e-02, -3.6837e-02, -1.4350e-01,  ...,  1.0283e-01,
+            2.8642e-02,  4.9216e-02],
+]]])
+
+mask shape before slice torch.Size([64, 4, 256, 256]) iou_pred torch.Size([64, 4])
+mask shape torch.Size([64, 3, 256, 256]) iou_pred torch.Size([64, 3])
